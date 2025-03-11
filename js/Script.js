@@ -62,7 +62,7 @@ async function displayTrending(timeWindow = 'day') {
         const movieElement = document.createElement('div');
         movieElement.className = 'movie';
         movieElement.innerHTML = `
-            <a href="#">
+            <a href="focus.html?id=${item.id}">
                 <img src="${IMAGE_BASE_URL}${item.poster_path}" alt="${title}">
                 <div class="score">
                     <p>${score}%</p>
@@ -74,6 +74,7 @@ async function displayTrending(timeWindow = 'day') {
         container.appendChild(movieElement);
     });
 }
+
 
 // Display TV shows
 async function displayTVShows(category = 'top_rated') {
@@ -87,7 +88,7 @@ async function displayTVShows(category = 'top_rated') {
         const showElement = document.createElement('div');
         showElement.className = 'movie';
         showElement.innerHTML = `
-            <a href="#">
+            <a href="focus.html?id=${show.id}">
                 <img src="${IMAGE_BASE_URL}${show.poster_path}" alt="${show.name}">
                 <div class="score">
                     <p>${score}%</p>
@@ -99,6 +100,7 @@ async function displayTVShows(category = 'top_rated') {
         container.appendChild(showElement);
     });
 }
+
 
 // Event Listeners
 document.addEventListener('DOMContentLoaded', () => {
