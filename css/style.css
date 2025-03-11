@@ -625,4 +625,77 @@ footer p {
     font-size: 1.1em;
   }
 }
+
+
+.poster {
+  max-width: 100%;
+  height: auto;
+}
+
+.actor img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Media query for iPad Mini (768px width) */
+@media screen and (max-width: 768px) {
+  .focus-container .banner .content {
+    grid-template-columns: 1fr;
+    padding: 20px 5%;
+  }
+
+  .focus-container .banner .content .right {
+    width: 100%;
+  }
+
+  .focus-container .banner .content .right .top {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .focus-container .banner .content .right .top .score {
+    margin-bottom: 10px;
+  }
+
+  .focus-container .banner .content .right .synopsis h2 {
+    font-size: 1.2em;
+  }
+
+  .focus-container .banner .content .right .synopsis p {
+    font-size: 1em;
+  }
+}
+
+/* Media query for iPhone 11 Pro Max (414px width) */
+@media screen and (max-width: 414px) {
+  .focus-container .banner .content {
+    grid-template-columns: 1fr;
+    padding: 10px 5%;
+  }
+
+  .focus-container .banner .content .right {
+    width: 100%;
+  }
+
+  .focus-container .banner .content .right .top {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .focus-container .banner .content .right .top .score {
+    margin-bottom: 10px;
+  }
+
+  .focus-container .banner .content .right .synopsis h2 {
+    font-size: 1em;
+  }
+
+  .focus-container .banner .content .right .synopsis p {
+    font-size: 0.9em;
+  }
+
+  .focus-container .casting .actors .actor {
+    width: 100%;
+  }
+}
 /*# sourceMappingURL=style.css.map */

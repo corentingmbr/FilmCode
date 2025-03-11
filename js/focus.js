@@ -10,56 +10,76 @@ const fetchConfig = {
 };
 
 // Récupère l'ID du film depuis l'URL
-function getMovieIdFromUrl() {
+function getElementFromUrl() {
     const params = new URLSearchParams(window.location.search);
-    console.log("Movie ID from URL:", params.get("id"));
-    return params.get("id");
+    const type = params.get("type"); // "movie" ou "tv"
+    const id = params.get("id"); // ID du film ou de la série
+
+    console.log("Type récupéré :", type);
+    console.log("ID récupéré :", id);
+
+    return { type, id };
 }
+
 
 // Récupère les détails du film depuis l'API
 
 
-async function fetchMovieDetails(movieId) {
-    const url = `${BASE_URL}/movie/${movieId}?language=fr-FR`;
-    const response = await fetch(url, fetchConfig);
-    return response.json();
+async function fetchElementDetails(type, id) {
+    const url = `${BASE_URL}/${type}/${id}?language=fr-FR`;
+    try {
+        const response = await fetch(url, fetchConfig);
+        return await response.json();
+    } catch (error) {
+        console.error("Erreur lors de la récupération des détails :", error);
+        return null;
+    }
 }
 
 
+
 // Récupère le casting du film
-async function fetchMovieCredits(movieId) {
+async function fetchElementCredits(type, id) {
     try {
-        const response = await fetch(`${BASE_URL}/movie/${movieId}/credits?language=fr-FR`, fetchConfig);
+        const response = await fetch(`${BASE_URL}/${type}/${id}/credits?language=fr-FR`, fetchConfig);
         return await response.json();
     } catch (error) {
         console.error("Erreur lors de la récupération du casting:", error);
     }
 }
 
+
 // Affiche les détails du film sur la page
-async function displayMovieDetails() {
-    const movieId = getMovieIdFromUrl();
-    if (!movieId) return;
+async function displayElementDetails() {
+    const { type, id } = getElementFromUrl();
+    if (!type || !id) return;
 
-    const movie = await fetchMovieDetails(movieId);
-    console.log(movie);
+    const element = await fetchElementDetails(type, id);
+    if (!element || element.success === false) return;
 
-    if (!movie || movie.success === false) return;
-
-    if (movie.backdrop_path) {
-        document.querySelector(".banner").style.backgroundImage = `url(${IMAGE_BASE_URL + movie.backdrop_path})`;
+    // Modify the background image (backdrop)
+    if (element.backdrop_path) {
+        document.querySelector(".banner").style.backgroundImage = `url(${IMAGE_BASE_URL + element.backdrop_path})`;
     }
 
-    document.querySelector(".banner img").src = IMAGE_BASE_URL + movie.poster_path;
-    document.querySelector(".title-date h1").textContent = `${movie.title} (${new Date(movie.release_date).getFullYear()})`;
-    document.querySelector(".title-date span").textContent = `${movie.release_date} - ${movie.genres.map(g => g.name).join(", ")} - ${movie.runtime} min`;
-    document.querySelector(".synopsis p").textContent = movie.overview;
+    // Modify the page info
+    const posterImg = document.querySelector(".banner img");
+    posterImg.src = IMAGE_BASE_URL + element.poster_path;
+    posterImg.classList.add("poster");
 
-    displayMovieCredits(movieId);
+    const score = Math.round(element.vote_average * 10);
+    document.querySelector(".score").textContent = `${score}%`
+    document.querySelector(".title-date h1").textContent = `${element.title || element.name} (${new Date(element.first_air_date || element.release_date).getFullYear()})`;
+    document.querySelector(".title-date span").textContent = `${element.first_air_date || element.release_date} - ${element.genres.map(g => g.name).join(", ")} - ${element.episode_run_time ? element.episode_run_time[0] : element.runtime} min`;
+    document.querySelector(".synopsis p").textContent = element.overview;
+
+    // Load the cast
+    displayElementCredits(type, id);
 }
 
-async function displayMovieCredits(movieId) {
-    const credits = await fetchMovieCredits(movieId);
+
+async function displayElementCredits(type, id) {
+    const credits = await fetchElementCredits(type, id);
     if (!credits) return;
 
     const actorsContainer = document.querySelector(".actors");
@@ -77,4 +97,5 @@ async function displayMovieCredits(movieId) {
     });
 }
 
-document.addEventListener("DOMContentLoaded", displayMovieDetails);
+
+document.addEventListener("DOMContentLoaded", displayElementDetails);

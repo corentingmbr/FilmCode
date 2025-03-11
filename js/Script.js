@@ -55,6 +55,7 @@ async function displayTrending(timeWindow = 'day') {
     container.innerHTML = '';
 
     trending.slice(0, 4).forEach(item => {
+        const type = item.media_type === "tv" ? "tv" : "movie"; // Vérifie s'il s'agit d'un film ou d'une série
         const score = Math.round(item.vote_average * 10);
         const title = item.title || item.name;
         const date = item.release_date || item.first_air_date;
@@ -62,17 +63,19 @@ async function displayTrending(timeWindow = 'day') {
         const movieElement = document.createElement('div');
         movieElement.className = 'movie';
         movieElement.innerHTML = `
-            <a href="focus.html?id=${item.id}">
-                <img src="${IMAGE_BASE_URL}${item.poster_path}" alt="${title}">
-                <div class="score">
-                    <p>${score}%</p>
-                </div>
-                <h5>${title}</h5>
-                <p>${formatDate(date)}</p>
-            </a>
-        `;
+        <a href="focus.html?type=${type}&id=${item.id}">
+            <img src="${IMAGE_BASE_URL}${item.poster_path}" alt="${title}">
+            <div class="score">
+                <p>${score}%</p>
+            </div>
+            <h5>${title}</h5>
+            <p>${formatDate(date)}</p>
+        </a>
+    `;
+
         container.appendChild(movieElement);
     });
+
 }
 
 
@@ -88,15 +91,16 @@ async function displayTVShows(category = 'top_rated') {
         const showElement = document.createElement('div');
         showElement.className = 'movie';
         showElement.innerHTML = `
-            <a href="focus.html?id=${show.id}">
-                <img src="${IMAGE_BASE_URL}${show.poster_path}" alt="${show.name}">
-                <div class="score">
-                    <p>${score}%</p>
-                </div>
-                <h5>${show.name}</h5>
-                <p>${formatDate(show.first_air_date)}</p>
-            </a>
-        `;
+    <a href="focus.html?type=tv&id=${show.id}">
+        <img src="${IMAGE_BASE_URL}${show.poster_path}" alt="${show.name}">
+        <div class="score">
+            <p>${score}%</p>
+        </div>
+        <h5>${show.name}</h5>
+        <p>${formatDate(show.first_air_date)}</p>
+    </a>
+`;
+
         container.appendChild(showElement);
     });
 }
