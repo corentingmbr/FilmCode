@@ -1,6 +1,7 @@
 const API_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjOTk2OTA2N2EzMjE4Y2U0M2M0OTE1ODYwZmI1YTY4MSIsIm5iZiI6MTczOTg4NDM3My4yMTIsInN1YiI6IjY3YjQ4NzU1OTFkN2U2NmM2NTZkZDFmZiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.6Br1nDrZmToRWUlTfdv90vyrGd0XTKU4tOu8X23lkBY";
 const BASE_URL = "https://api.themoviedb.org/3";
 const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500";
+const FALLBACK_IMAGE = "img/PopCorn.png";
 
 // API fetch configuration
 const fetchConfig = {
@@ -36,6 +37,7 @@ async function fetchTVShows(category = 'top_rated') {
 
 // Format date to French format
 function formatDate(dateString) {
+    if (!dateString) return 'Date inconnue';
     const options = { day: 'numeric', month: 'long', year: 'numeric' };
     return new Date(dateString).toLocaleDateString('fr-FR', options);
 }
@@ -46,6 +48,11 @@ function getScoreClass(vote) {
     if (vote >= 6) return '60';
     if (vote >= 4) return '40';
     return '20';
+}
+
+// Get poster URL or fallback if poster_path is null
+function getPosterUrl(posterPath) {
+    return posterPath ? `${IMAGE_BASE_URL}${posterPath}` : FALLBACK_IMAGE;
 }
 
 // Display trending content
@@ -63,21 +70,18 @@ async function displayTrending(timeWindow = 'day') {
         const movieElement = document.createElement('div');
         movieElement.className = 'movie';
         movieElement.innerHTML = `
-        <a href="focus.html?type=${type}&id=${item.id}">
-            <img src="${IMAGE_BASE_URL}${item.poster_path}" alt="${title}">
-            <div class="score">
-                <p>${score}%</p>
-            </div>
-            <h5>${title}</h5>
-            <p>${formatDate(date)}</p>
-        </a>
-    `;
-
+            <a href="focus.html?type=${type}&id=${item.id}">
+                <img src="${getPosterUrl(item.poster_path)}" alt="${title}" onerror="this.src='${FALLBACK_IMAGE}'">
+                <div class="score">
+                    <p>${score}%</p>
+                </div>
+                <h5>${title}</h5>
+                <p>${formatDate(date)}</p>
+            </a>
+        `;
         container.appendChild(movieElement);
     });
-
 }
-
 
 // Display TV shows
 async function displayTVShows(category = 'top_rated') {
@@ -91,16 +95,15 @@ async function displayTVShows(category = 'top_rated') {
         const showElement = document.createElement('div');
         showElement.className = 'movie';
         showElement.innerHTML = `
-    <a href="focus.html?type=tv&id=${show.id}">
-        <img src="${IMAGE_BASE_URL}${show.poster_path}" alt="${show.name}">
-        <div class="score">
-            <p>${score}%</p>
-        </div>
-        <h5>${show.name}</h5>
-        <p>${formatDate(show.first_air_date)}</p>
-    </a>
-`;
-
+            <a href="focus.html?type=tv&id=${show.id}">
+                <img src="${getPosterUrl(show.poster_path)}" alt="${show.name}" onerror="this.src='${FALLBACK_IMAGE}'">
+                <div class="score">
+                    <p>${score}%</p>
+                </div>
+                <h5>${show.name}</h5>
+                <p>${formatDate(show.first_air_date)}</p>
+            </a>
+        `;
         container.appendChild(showElement);
     });
 }

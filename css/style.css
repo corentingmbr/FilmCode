@@ -626,15 +626,15 @@ footer p {
   }
 }
 
-
 .poster {
   max-width: 100%;
   height: auto;
 }
 
 .actor img {
-  max-width: 100%;
-  height: auto;
+  width: 350px; /* Set the desired width */
+  height: 425px; /* Set the desired height */
+  object-fit: cover;
 }
 
 /* Media query for iPad Mini (768px width) */

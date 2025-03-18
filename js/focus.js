@@ -68,10 +68,26 @@ async function displayElementDetails() {
     posterImg.classList.add("poster");
 
     const score = Math.round(element.vote_average * 10);
-    document.querySelector(".score").textContent = `${score}%`
-    document.querySelector(".title-date h1").textContent = `${element.title || element.name} (${new Date(element.first_air_date || element.release_date).getFullYear()})`;
-    document.querySelector(".title-date span").textContent = `${element.first_air_date || element.release_date} - ${element.genres.map(g => g.name).join(", ")} - ${element.episode_run_time ? element.episode_run_time[0] : element.runtime} min`;
-    document.querySelector(".synopsis p").textContent = element.overview;
+    const title = element.title || element.name;
+    const releaseDate = element.first_air_date || element.release_date;
+    const genres = element.genres.map(g => g.name).join(", ");
+    const details = type === "tv"
+        ? `${element.number_of_seasons} ${element.number_of_seasons > 1 ? 'saisons' : 'saison'}, ${element.number_of_episodes} ${element.number_of_episodes > 1 ? 'épisodes' : 'épisode'}`
+        : `${element.runtime} min`;
+    const overview = element.overview;
+
+    document.querySelector(".score").textContent = `${score}%`;
+    document.querySelector(".title-date h1").textContent = `${title} (${new Date(releaseDate).getFullYear()})`;
+    document.querySelector(".title-date span").textContent = `${releaseDate} - ${genres} - ${details}`;
+    document.querySelector(".synopsis p").textContent = overview;
+
+    // Log details to the console
+    console.log("Score:", score);
+    console.log("Title:", title);
+    console.log("Release Date:", releaseDate);
+    console.log("Genres:", genres);
+    console.log("Details:", details);
+    console.log("Overview:", overview);
 
     // Load the cast
     displayElementCredits(type, id);
@@ -85,11 +101,12 @@ async function displayElementCredits(type, id) {
     const actorsContainer = document.querySelector(".actors");
     actorsContainer.innerHTML = "";
 
-    credits.cast.slice(0, 4).forEach(actor => {
+    credits.cast.slice(0, 8).forEach(actor => {
         const actorElement = document.createElement("div");
         actorElement.className = "actor";
+        const actorImage = actor.profile_path ? `${IMAGE_BASE_URL + actor.profile_path}` : 'img/iconhuman.png';
         actorElement.innerHTML = `
-            <img src="${IMAGE_BASE_URL + actor.profile_path}" alt="${actor.name}">
+            <img src="${actorImage}" alt="${actor.name}">
             <h4>${actor.name}</h4>
             <span>${actor.character}</span>
         `;

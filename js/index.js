@@ -63,7 +63,7 @@ async function displayTrending(timeWindow = 'day') {
         movieElement.className = 'movie';
         movieElement.innerHTML = `
             <a href="#">
-                <img src="${IMAGE_BASE_URL}${item.poster_path}" alt="${title}">
+                <img src="${IMAGE_BASE_URL}${item.poster_path}" alt="${title}" onerror="this.onerror=null;this.src='img/PopCorn.png';">
                 <div class="score">
                     <p>${score}%</p>
                 </div>
@@ -88,7 +88,7 @@ async function displayTVShows(category = 'top_rated') {
         showElement.className = 'movie';
         showElement.innerHTML = `
             <a href="#">
-                <img src="${IMAGE_BASE_URL}${show.poster_path}" alt="${show.name}">
+                <img src="${IMAGE_BASE_URL}${show.poster_path}" alt="${show.name}" onerror="this.onerror=null;this.src='img/PopCorn.png';">
                 <div class="score">
                     <p>${score}%</p>
                 </div>
